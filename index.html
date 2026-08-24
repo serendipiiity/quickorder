@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>快速叫貨器 - 米粉&自然風</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              800: '#0c4a6e',
+            }
+          },
+          fontFamily: {
+            sans: ['"Noto Sans TC"', '"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #f4f9fd;
+      transition: background-color 0.3s ease;
+    }
+    
+    body.nature-theme {
+      background-color: #f0fdf4;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f0f9ff;
+    }
+    body.nature-theme ::-webkit-scrollbar-track {
+      background: #f0fdf4;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #bae6fd;
+      border-radius: 9999px;
+    }
+    body.nature-theme ::-webkit-scrollbar-thumb {
+      background: #bbf7d0;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #7dd3fc;
+    }
+    body.nature-theme ::-webkit-scrollbar-thumb:hover {
+      background: #86efac;
+    }
+
+    .soft-card {
+      background: #ffffff;
+      border: 1px solid rgba(186, 230, 253, 0.6);
+      box-shadow: 0 10px 25px -5px rgba(186, 230, 253, 0.3), 0 8px 10px -6px rgba(186, 230, 253, 0.2);
+    }
+    body.nature-theme .soft-card {
+      border: 1px solid rgba(187, 247, 208, 0.6);
+      box-shadow: 0 10px 25px -5px rgba(187, 247, 208, 0.3), 0 8px 10px -6px rgba(187, 247, 208, 0.2);
+    }
+
+    .bounce-active:active {
+      transform: scale(0.95);
+    }
+
+    .glass-header {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body id="body-el" class="h-full text-slate-700 antialiased selection:bg-brand-200 selection:text-brand-800 pb-64">
+
+  <header class="sticky top-0 z-20 glass-header border-b border-brand-100 shadow-sm" id="header-el">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div id="header-icon-bg" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-300 to-brand-500 flex items-center justify-center text-white shadow-md shadow-brand-200 transition-colors duration-300">
+          <i class="fa-solid fa-basket-shopping text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-bold text-slate-800 tracking-tight">
+            快速叫貨器 - 米粉&自然風
+          </h1>
+        </div>
+      </div>
+
+      <button id="reset-btn-el" onclick="confirmResetCurrentPage()" class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50/70 text-rose-600 hover:bg-rose-100/80 text-xs font-medium transition duration-200 flex items-center gap-1.5 bounce-active">
+        <i class="fa-solid fa-rotate-right"></i>
+        <span class="hidden sm:inline">重置本頁</span>
+      </button>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-1 pb-3">
+      <div id="tabs-container" class="grid grid-cols-2 gap-2 p-1.5 bg-sky-100/70 rounded-2xl border border-sky-200/60 transition-colors duration-300">
+        <button id="tab-btn-mifen" onclick="switchPage('mifen')" class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 bg-white text-brand-600 shadow-sm font-semibold">
+          <i class="fa-solid fa-bowl-food text-brand-500"></i>
+          <span>米粉叫貨</span>
+          <span id="badge-mifen" class="hidden ml-1 px-2 py-0.5 text-xs rounded-full bg-brand-500 text-white font-bold">0</span>
+        </button>
+        <button id="tab-btn-nature" onclick="switchPage('nature')" class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 text-slate-600 hover:text-emerald-600">
+          <i class="fa-solid fa-leaf text-emerald-500"></i>
+          <span>自然風</span>
+          <span id="badge-nature" class="hidden ml-1 px-2 py-0.5 text-xs rounded-full bg-emerald-500 text-white font-bold">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 mt-5 space-y-6">
+
+    <section id="page-mifen" class="space-y-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-6 bg-brand-500 rounded-full"></div>
+          <h2 class="font-bold text-slate-800 text-base sm:text-lg">米粉叫貨品項 (共 10 項)</h2>
+        </div>
+        <span class="text-xs text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200 font-medium">各式各樣米粉</span>
+      </div>
+
+      <div id="mifen-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Rice Noodles Text Preview (Positioned below item grid) -->
+      <div id="preview-block-mifen" class="soft-card rounded-2xl p-4 border-2 border-brand-200 bg-white/95 shadow-md space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-file-lines text-brand-500 text-base"></i>
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base">【米粉叫貨】文字預覽區</h3>
+          </div>
+          <button onclick="togglePreviewCollapse()" class="text-xs text-brand-600 hover:text-brand-800 font-medium flex items-center gap-1">
+            <i id="collapse-icon-mifen" class="fa-solid fa-chevron-down"></i>
+            <span id="collapse-text-mifen">收合</span>
+          </button>
+        </div>
+
+        <div id="preview-content-mifen" class="space-y-2.5">
+          <textarea id="summary-mifen" readonly rows="8" class="w-full p-3 rounded-xl border border-sky-200 bg-slate-50 font-mono text-xs text-slate-700 focus:outline-none resize-none leading-relaxed shadow-inner" placeholder="選擇商品數量後，叫貨文字將自動顯示於此..."></textarea>
+
+          <div class="flex gap-2">
+            <button onclick="copyToClipboard('summary-mifen')" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold text-xs shadow-md shadow-brand-200 flex items-center justify-center gap-1.5 transition bounce-active">
+              <i class="fa-solid fa-copy"></i>
+              <span>複製米粉叫貨文字</span>
+            </button>
+            <button onclick="resetCategory('mifen')" class="py-2.5 px-3 rounded-xl border border-sky-200 bg-white hover:bg-sky-50 text-slate-600 font-medium text-xs flex items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-trash-can text-slate-400"></i>
+              <span>清空本頁</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-nature" class="hidden space-y-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-6 bg-emerald-500 rounded-full"></div>
+          <h2 class="font-bold text-slate-800 text-base sm:text-lg">自然風叫貨</h2>
+        </div>
+        <span class="text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 font-medium">調理包 & 馬桶清潔球</span>
+      </div>
+
+      <!-- Section 1: 聯夏調理包 -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 border-b border-emerald-200 pb-2">
+          <i class="fa-solid fa-utensils text-amber-500"></i>
+          <h3 class="font-bold text-slate-800 text-sm sm:text-base">聯夏調理包 (24入/箱)</h3>
+          <span class="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">9 項</span>
+        </div>
+        <div id="nature-grid-1" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Section 2: 馬桶清潔球Bref -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 border-b border-emerald-200 pb-2">
+          <i class="fa-solid fa-sparkles text-emerald-500"></i>
+          <h3 class="font-bold text-slate-800 text-sm sm:text-base">馬桶清潔球 Bref (10入/箱)</h3>
+          <span class="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">3 項</span>
+        </div>
+        <div id="nature-grid-2" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Section 3: 馬桶清潔球FRESH -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 border-b border-emerald-200 pb-2">
+          <i class="fa-solid fa-droplet text-emerald-600"></i>
+          <h3 class="font-bold text-slate-800 text-sm sm:text-base">馬桶清潔球 FRESH (60入/箱)</h3>
+          <span class="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">4 項</span>
+        </div>
+        <div id="nature-grid-3" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Section 4: 馬桶清潔球WeYu -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 border-b border-emerald-200 pb-2">
+          <i class="fa-solid fa-wand-magic-sparkles text-emerald-500"></i>
+          <h3 class="font-bold text-slate-800 text-sm sm:text-base">馬桶清潔球 WeYu (72入/箱)</h3>
+          <span class="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">4 項</span>
+        </div>
+        <div id="nature-grid-4" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Nature Text Preview (Positioned below all item sections) -->
+      <div id="preview-block-nature" class="soft-card rounded-2xl p-4 border-2 border-emerald-200 bg-white/95 shadow-md space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-file-lines text-emerald-600 text-base"></i>
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base">【自然風】文字預覽區</h3>
+          </div>
+          <button onclick="togglePreviewCollapse()" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1">
+            <i id="collapse-icon-nature" class="fa-solid fa-chevron-down"></i>
+            <span id="collapse-text-nature">收合</span>
+          </button>
+        </div>
+
+        <div id="preview-content-nature" class="space-y-2.5">
+          <textarea id="summary-nature" readonly rows="8" class="w-full p-3 rounded-xl border border-emerald-200 bg-slate-50 font-mono text-xs text-slate-700 focus:outline-none resize-none leading-relaxed shadow-inner" placeholder="選擇商品數量後，自然風叫貨文字將自動顯示於此..."></textarea>
+
+          <div class="flex gap-2">
+            <button onclick="copyToClipboard('summary-nature')" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-200 flex items-center justify-center gap-1.5 transition bounce-active">
+              <i class="fa-solid fa-copy"></i>
+              <span>複製自然風叫貨文字</span>
+            </button>
+            <button onclick="resetCategory('nature')" class="py-2.5 px-3 rounded-xl border border-emerald-200 bg-white hover:bg-emerald-50 text-slate-600 font-medium text-xs flex items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-trash-can text-slate-400"></i>
+              <span>清空本頁</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Message Alert -->
+  <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 transform translate-y-10 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-800/90 backdrop-blur-md text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-sm font-medium border border-slate-700">
+      <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+      <span id="toast-msg">已成功複製到剪貼簿！</span>
+    </div>
+  </div>
+
+  <!-- Right Floating Buttons (Vertical Text in Page Middle) -->
+  <div class="fixed right-0 top-1/2 -translate-y-1/2 z-30 pointer-events-none">
+    <div class="pointer-events-auto flex flex-col gap-2">
+      <!-- Back to Top Button -->
+      <button onclick="scrollToTop()" class="py-3 px-2.5 rounded-l-2xl bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-lg shadow-slate-800/20 border-y border-l border-slate-500 transition-all duration-300 bounce-active group" title="回到上方">
+        <i class="fa-solid fa-arrow-up text-xs group-hover:-translate-y-0.5 transition-transform"></i>
+        <span class="tracking-widest" style="writing-mode: vertical-rl;">回到上方</span>
+      </button>
+
+      <!-- Go to Preview Button -->
+      <button id="float-preview-btn" onclick="scrollToPreview()" class="py-3.5 px-2.5 rounded-l-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-xl shadow-brand-500/30 border-y border-l border-brand-300 transition-all duration-300 bounce-active group" title="前往複製區">
+        <i class="fa-solid fa-arrow-down-short-wide text-xs group-hover:translate-y-0.5 transition-transform"></i>
+        <span class="tracking-widest" style="writing-mode: vertical-rl;">前往複製區</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const DATA = {
+      mifen: [
+        { name: "➊粗☆一公斤", category: "米粉叫貨" },
+        { name: "➋細★一公斤", category: "米粉叫貨" },
+        { name: "➌粗☆100克", category: "米粉叫貨" },
+        { name: "➍細★100克", category: "米粉叫貨" },
+        { name: "❺黑芝麻(500克)", category: "米粉叫貨" },
+        { name: "❻米含量低(一公斤)", category: "米粉叫貨" },
+        { name: "❼紅薯粉絲(一公斤)", category: "米粉叫貨" },
+        { name: "❽越南河粉△寬版(500克)", category: "米粉叫貨" },
+        { name: "❾越南河粉▲細版(500克)", category: "米粉叫貨" },
+        { name: "①⓪越南米線500克", category: "米粉叫貨" }
+      ],
+      nature: {
+        sec1: {
+          title: "聯夏調理包 (24入/箱)",
+          icon: "fa-utensils",
+          items: [
+            "日式咖哩牛", "黑胡椒牛腩", "日式咖哩雞", 
+            "東坡肉", "宮保雞丁", "義式海鮮醬", 
+            "義式茄汁肉醬", "蔬菜百匯", "茄汁雞丁"
+          ]
+        },
+        sec2: {
+          title: "馬桶清潔球 Bref (10入/箱)",
+          icon: "fa-sparkles",
+          items: ["麝香薄荷", "清爽橙花", "永恆紫羅蘭"]
+        },
+        sec3: {
+          title: "馬桶清潔球 FRESH (60入/箱)",
+          icon: "fa-droplet",
+          items: ["松木", "海洋", "薰衣草", "檸檬"]
+        },
+        sec4: {
+          title: "馬桶清潔球 WeYu (72入/箱)",
+          icon: "fa-wand-magic-sparkles",
+          items: ["茉莉香", "甜橙香", "白桃香", "花香"]
+        }
+      }
+    };
+
+    const state = {};
+    let currentPage = 'mifen';
+    let isPreviewCollapsed = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMifenGrid();
+      renderNatureGrid();
+      updateAllSummaries();
+    });
+
+    function renderMifenGrid() {
+      const container = document.getElementById('mifen-grid');
+      container.innerHTML = DATA.mifen.map((item, idx) => {
+        state[item.name] = state[item.name] || 0;
+        return createItemCardHtml(item.name, idx, 'mifen');
+      }).join('');
+    }
+
+    function renderNatureGrid() {
+      const secMap = [
+        { key: 'sec1', target: 'nature-grid-1' },
+        { key: 'sec2', target: 'nature-grid-2' },
+        { key: 'sec3', target: 'nature-grid-3' },
+        { key: 'sec4', target: 'nature-grid-4' }
+      ];
+
+      secMap.forEach(sec => {
+        const secData = DATA.nature[sec.key];
+        const container = document.getElementById(sec.target);
+        container.innerHTML = secData.items.map((itemName, idx) => {
+          state[itemName] = state[itemName] || 0;
+          return createItemCardHtml(itemName, `${sec.key}-${idx}`, 'nature');
+        }).join('');
+      });
+    }
+
+    function createItemCardHtml(name, id, pageType) {
+      const count = state[name] || 0;
+      const isSelected = count > 0;
+      
+      const isNature = pageType === 'nature';
+      const ringColor = isNature ? 'ring-emerald-400/80 bg-emerald-50/30' : 'ring-brand-400/80 bg-sky-50/30';
+      const hoverColor = isNature ? 'hover:border-emerald-300' : 'hover:border-brand-300';
+      const badgeBg = isNature ? 'bg-emerald-100 text-emerald-600' : 'bg-brand-100 text-brand-600';
+      const btnBg = isNature ? 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-200 text-white' : 'bg-brand-500 hover:bg-brand-600 shadow-brand-200 text-white';
+      const minusHover = isNature ? 'hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-300' : 'hover:bg-brand-50 hover:text-brand-600 hover:border-brand-300';
+      const textInputColor = isNature ? 'text-emerald-700' : 'text-brand-700';
+      const borderTheme = isNature ? 'border-emerald-100 bg-emerald-50/80' : 'border-sky-100 bg-sky-50/80';
+      const borderMinus = isNature ? 'border-emerald-200' : 'border-sky-200';
+
+      return `
+        <div id="card-${id}" class="item-card soft-card rounded-2xl p-3.5 flex items-center justify-between gap-2 transition-all duration-200 ${hoverColor} ${isSelected ? `ring-2 ${ringColor}` : ''}">
+          <div class="flex-1 min-w-0">
+            <div class="font-medium text-slate-800 text-sm sm:text-base truncate" title="${name}">
+              ${name}
+            </div>
+            <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1">
+              ${count > 0 ? `<span class="${badgeBg} font-semibold px-1.5 py-0.2 rounded">已選 ${count}</span>` : '未選擇'}
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 ${borderTheme} p-1 rounded-xl border shrink-0">
+            <button onclick="changeQty('${name}', -1)" class="w-8 h-8 rounded-lg bg-white ${borderMinus} text-slate-600 ${minusHover} flex items-center justify-center font-bold text-sm transition bounce-active disabled:opacity-40" ${count === 0 ? 'disabled' : ''}>
+              <i class="fa-solid fa-minus text-xs"></i>
+            </button>
+            
+            <input type="number" min="0" value="${count}" onchange="setQty('${name}', this.value)" class="w-10 text-center font-bold text-sm bg-transparent border-none ${textInputColor} focus:outline-none focus:ring-0">
+
+            <button onclick="changeQty('${name}', 1)" class="w-8 h-8 rounded-lg ${btnBg} flex items-center justify-center font-bold text-sm transition bounce-active shadow-sm">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function changeQty(name, delta) {
+      const current = state[name] || 0;
+      const step = DATA.mifen.some(item => item.name === name) ? 10 : 1;
+      state[name] = Math.max(0, current + (delta * step));
+      refreshUI();
+    }
+
+    function setQty(name, val) {
+      const num = parseInt(val, 10);
+      state[name] = isNaN(num) || num < 0 ? 0 : num;
+      refreshUI();
+    }
+
+    function refreshUI() {
+      renderMifenGrid();
+      renderNatureGrid();
+      updateAllSummaries();
+    }
+
+    function updateAllSummaries() {
+      // 米粉 Text
+      let mifenCount = 0;
+      let mifenLines = [];
+
+      DATA.mifen.forEach(item => {
+        const q = state[item.name] || 0;
+        if (q > 0) {
+          mifenCount++;
+          mifenLines.push(`${item.name}x${q}包`);
+        } else {
+          mifenLines.push(`${item.name}❌`);
+        }
+      });
+
+      let mifenText = "";
+      if (DATA.mifen.length > 0) {
+        mifenText = `【米粉叫貨】\n\n`;
+        mifenText += mifenLines.join('\n');
+      }
+
+      document.getElementById('summary-mifen').value = mifenText;
+      document.getElementById('badge-mifen').textContent = mifenCount;
+      document.getElementById('badge-mifen').classList.toggle('hidden', mifenCount === 0);
+
+      // 自然風 Text
+      let natureCount = 0;
+      let natureTotalQty = 0;
+      let natureSectionTexts = [];
+
+      Object.keys(DATA.nature).forEach(secKey => {
+        const sec = DATA.nature[secKey];
+        let secLines = [];
+        sec.items.forEach(itemName => {
+          const q = state[itemName] || 0;
+          if (q > 0) {
+            natureCount++;
+            natureTotalQty += q;
+            secLines.push(`${itemName}x${q}箱`);
+          }
+        });
+
+        if (secLines.length > 0) {
+          natureSectionTexts.push(`【${sec.title}】\n` + secLines.join('\n'));
+        }
+      });
+
+      let natureText = "";
+      if (natureSectionTexts.length > 0) {
+        natureText = `🌿【自然風 叫貨單】\n\n`;
+        natureText += natureSectionTexts.join('\n\n');
+      }
+
+      document.getElementById('summary-nature').value = natureText;
+      document.getElementById('badge-nature').textContent = natureCount;
+      document.getElementById('badge-nature').classList.toggle('hidden', natureCount === 0);
+    }
+
+    function switchPage(page) {
+      currentPage = page;
+      const mifenSec = document.getElementById('page-mifen');
+      const natureSec = document.getElementById('page-nature');
+      const btnMifen = document.getElementById('tab-btn-mifen');
+      const btnNature = document.getElementById('tab-btn-nature');
+      const bodyEl = document.getElementById('body-el');
+      const tabsContainer = document.getElementById('tabs-container');
+      const headerIconBg = document.getElementById('header-icon-bg');
+      const floatPreviewBtn = document.getElementById('float-preview-btn');
+
+      if (page === 'mifen') {
+        bodyEl.classList.remove('nature-theme');
+        tabsContainer.className = "grid grid-cols-2 gap-2 p-1.5 bg-sky-100/70 rounded-2xl border border-sky-200/60 transition-colors duration-300";
+        headerIconBg.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-300 to-brand-500 flex items-center justify-center text-white shadow-md shadow-brand-200 transition-colors duration-300";
+        floatPreviewBtn.className = "py-3.5 px-2.5 rounded-l-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-xl shadow-brand-500/30 border-y border-l border-brand-300 transition-all duration-300 bounce-active group";
+
+        mifenSec.classList.remove('hidden');
+        natureSec.classList.add('hidden');
+        btnMifen.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 bg-white text-brand-600 shadow-sm font-semibold";
+        btnNature.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 text-slate-600 hover:text-emerald-600";
+      } else {
+        bodyEl.classList.add('nature-theme');
+        tabsContainer.className = "grid grid-cols-2 gap-2 p-1.5 bg-emerald-100/70 rounded-2xl border border-emerald-200/60 transition-colors duration-300";
+        headerIconBg.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-300 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-emerald-200 transition-colors duration-300";
+        floatPreviewBtn.className = "py-3.5 px-2.5 rounded-l-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-xl shadow-emerald-500/30 border-y border-l border-emerald-300 transition-all duration-300 bounce-active group";
+
+        mifenSec.classList.add('hidden');
+        natureSec.classList.remove('hidden');
+        btnNature.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 bg-white text-emerald-600 shadow-sm font-semibold";
+        btnMifen.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 text-slate-600 hover:text-brand-600";
+      }
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToPreview() {
+      const targetId = currentPage === 'mifen' ? 'preview-block-mifen' : 'preview-block-nature';
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function togglePreviewCollapse() {
+      isPreviewCollapsed = !isPreviewCollapsed;
+      const contentMifen = document.getElementById('preview-content-mifen');
+      const contentNature = document.getElementById('preview-content-nature');
+
+      const iconMifen = document.getElementById('collapse-icon-mifen');
+      const iconNature = document.getElementById('collapse-icon-nature');
+
+      const textMifen = document.getElementById('collapse-text-mifen');
+      const textNature = document.getElementById('collapse-text-nature');
+
+      if (isPreviewCollapsed) {
+        contentMifen.classList.add('hidden');
+        contentNature.classList.add('hidden');
+        iconMifen.className = 'fa-solid fa-chevron-up';
+        iconNature.className = 'fa-solid fa-chevron-up';
+        textMifen.textContent = '展開';
+        textNature.textContent = '展開';
+      } else {
+        contentMifen.classList.remove('hidden');
+        contentNature.classList.remove('hidden');
+        iconMifen.className = 'fa-solid fa-chevron-down';
+        iconNature.className = 'fa-solid fa-chevron-down';
+        textMifen.textContent = '收合';
+        textNature.textContent = '收合';
+      }
+    }
+
+    function copyToClipboard(textareaId) {
+      const textarea = document.getElementById(textareaId);
+      if (!textarea || !textarea.value) return;
+
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+
+      let success = false;
+      try {
+        success = document.execCommand('copy');
+      } catch (err) {
+        success = false;
+      }
+
+      if (success) {
+        showToast('已成功複製叫貨文字！可直接貼至 LINE');
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(textarea.value).then(() => {
+          showToast('已成功複製叫貨文字！可直接貼至 LINE');
+        }).catch(() => {
+          showToast('複製失敗，請手動全選複製', 'fa-triangle-exclamation', 'text-amber-400');
+        });
+      } else {
+        showToast('請手動選取文字進行複製', 'fa-triangle-exclamation', 'text-amber-400');
+      }
+    }
+
+    function resetCategory(cat) {
+      if (cat === 'mifen') {
+        DATA.mifen.forEach(item => state[item.name] = 0);
+      } else {
+        Object.keys(DATA.nature).forEach(k => {
+          DATA.nature[k].items.forEach(name => state[name] = 0);
+        });
+      }
+      refreshUI();
+      showToast('已清空本頁所有叫貨數量', 'fa-rotate-left', 'text-sky-300');
+    }
+
+    function confirmResetCurrentPage() {
+      resetCategory(currentPage);
+    }
+
+    let toastTimeout;
+    function showToast(msg, iconClass = 'fa-circle-check', iconColor = 'text-emerald-400') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      document.getElementById('toast-icon').className = `fa-solid ${iconClass} ${iconColor} text-lg`;
+
+      toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
