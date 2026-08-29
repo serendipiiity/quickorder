@@ -8,16 +8,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>快速叫貨器</title>
   
-  <!-- 快速叫貨器圖示 -->
-  <!-- 一般瀏覽器 / Safari 分頁與喜好項目圖示：圓形 -->
-  <link rel="icon" type="image/png" sizes="32x32" href="quickorder_icon.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="quickorder_icon.png">
-  <link rel="shortcut icon" type="image/png" href="quickorder_icon.png">
+  <!-- 快速叫貨器：Safari / iPhone / 加入主畫面 / 喜好項目完整圖示設定 -->
+  <!-- Safari、Chrome、Edge、Firefox 分頁與喜好項目 -->
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
 
-  <!-- iPhone / iPad Safari：加入主畫面、喜好項目使用的 Apple 圖示：方形 -->
-  <link rel="apple-touch-icon" sizes="180x180" href="quickorder_appicon.png">
-  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="quickorder_appicon.png">
+  <!-- iPhone / iPad Safari 加入主畫面 -->
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="apple-touch-icon-180.png">
+
+  <!-- iOS Web App -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="快速叫貨器">
+
+  <!-- Android / Chrome / PWA -->
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#6faef7">
+  <meta name="application-name" content="快速叫貨器">
+
 <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1029,6 +1042,22 @@
     }
 
     function switchPage(page) {
+      const mainEl = document.querySelector('main');
+      const currentDocumentHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      );
+
+      // 暫時保留切換前的頁面高度，避免內容高度瞬間縮短造成跳動。
+      if (mainEl) {
+        const mainRect = mainEl.getBoundingClientRect();
+        const minimumMainHeight = Math.max(
+          mainEl.offsetHeight,
+          currentDocumentHeight - mainRect.top
+        );
+        mainEl.style.minHeight = `${minimumMainHeight}px`;
+      }
+
       currentPage = page;
       const mifenSec = document.getElementById('page-mifen');
       const natureSec = document.getElementById('page-nature');
@@ -1072,8 +1101,23 @@
         // 切換米粉／自然風頁面後，一律回到整個頁面的最上方。
         // 同時處理 iPhone Safari、Chrome 等不同捲動容器。
         requestAnimationFrame(() => {
-          // 平滑回到最上方，避免切換頁面時瞬間跳動／閃爍
+          // 平滑回到最上方；先保留原頁高度，捲動完成後再解除，
+          // 可避免手機 Safari 從自然風底部切到米粉時突然閃回上方。
           window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+
+          const releaseMinHeight = () => {
+            if (window.scrollY <= 2) {
+              if (mainEl) mainEl.style.minHeight = '';
+              window.removeEventListener('scroll', releaseMinHeight);
+              clearTimeout(releaseMinHeightTimer);
+            }
+          };
+
+          window.addEventListener('scroll', releaseMinHeight, { passive: true });
+          const releaseMinHeightTimer = setTimeout(() => {
+            if (mainEl) mainEl.style.minHeight = '';
+            window.removeEventListener('scroll', releaseMinHeight);
+          }, 900);
         });
       });
     }
