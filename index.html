@@ -712,7 +712,7 @@
             </button>
             <button onclick="resetCategory('mifen')" class="py-2.5 px-3 rounded-xl border border-sky-200 bg-white hover:bg-sky-50 text-slate-600 font-medium text-xs flex items-center justify-center gap-1 transition">
               <i class="fa-solid fa-trash-can text-slate-400"></i>
-              <span>清空本頁</span>
+              <span>清空重填</span>
             </button>
           </div>
         </div>
@@ -795,7 +795,7 @@
             </button>
             <button onclick="resetCategory('nature')" class="py-2.5 px-3 rounded-xl border border-emerald-200 bg-white hover:bg-emerald-50 text-slate-600 font-medium text-xs flex items-center justify-center gap-1 transition">
               <i class="fa-solid fa-trash-can text-slate-400"></i>
-              <span>清空本頁</span>
+              <span>清空重填</span>
             </button>
           </div>
         </div>
@@ -1150,10 +1150,10 @@
       }
 
       if (success) {
-        showToast('已成功複製叫貨文字！');
+        showToast('已成功複製！');
       } else if (navigator.clipboard) {
         navigator.clipboard.writeText(textarea.value).then(() => {
-          showToast('已成功複製叫貨文字！');
+          showToast('已成功複製！');
         }).catch(() => {
           showToast('複製失敗，請手動全選複製', 'fa-triangle-exclamation', 'text-amber-400');
         });
@@ -1171,7 +1171,7 @@
         });
       }
       refreshUI();
-      showToast('已清空本頁所有叫貨數量', 'fa-rotate-left', 'text-sky-300');
+      showToast('已清空完成！', 'fa-rotate-left', 'text-sky-300');
     }
 
     function confirmResetCurrentPage() {
