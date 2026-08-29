@@ -1,10 +1,17 @@
+
+
 <!DOCTYPE html>
 <html lang="zh-TW" class="h-full bg-slate-50">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>快速叫貨器 - 米粉&自然風</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>快速叫貨器</title>
+  
+  <!-- 快速叫貨器圖示 -->
+  <link rel="icon" type="image/png" href="quickorder_icon.png">
+  <link rel="shortcut icon" type="image/png" href="quickorder_icon.png">
+  <link rel="apple-touch-icon" href="quickorder_appicon.png">
+<script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,8 +50,55 @@
       transition: background-color 0.3s ease;
     }
     
+    /* 分頁底色漸層：上方白色，往下逐漸轉為主題色 */
+    body.mifen-theme {
+      /* 延續整頁漸層，底色與漸層終點一致，避免頁尾出現方形色塊 */
+      background-color: #bfdbfe;
+      background-image: linear-gradient(180deg, #ffffff 0%, #eff6ff 38%, #bfdbfe 100%);
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+
     body.nature-theme {
+      /* 延續整頁漸層，底色與漸層終點一致，避免頁尾出現方形色塊 */
+      background-color: #bbf7d0;
+      background-image: linear-gradient(180deg, #ffffff 0%, #f0fdf4 38%, #bbf7d0 100%);
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+
+    body.mifen-theme #back-to-top-btn {
+      background-color: #ffffff;
+      color: #0369a1;
+      border-color: #7dd3fc;
+      box-shadow: 0 10px 20px rgba(3, 105, 161, 0.16);
+    }
+
+    body.mifen-theme #back-to-top-btn:hover {
+      background-color: #f0f9ff;
+    }
+
+    body.nature-theme #back-to-top-btn {
+      background-color: #ffffff;
+      color: #059669;
+      border-color: #86efac;
+      box-shadow: 0 10px 20px rgba(5, 150, 105, 0.16);
+    }
+
+    body.nature-theme #back-to-top-btn:hover {
       background-color: #f0fdf4;
+    }
+
+    body.mifen-theme #toast > div {
+      background: rgba(3, 105, 161, 0.96);
+      border-color: rgba(125, 211, 252, 0.8);
+    }
+
+    body.nature-theme #toast > div {
+      background: rgba(5, 150, 105, 0.96);
+      border-color: rgba(110, 231, 183, 0.8);
     }
     
     ::-webkit-scrollbar {
@@ -81,6 +135,48 @@
       box-shadow: 0 10px 25px -5px rgba(187, 247, 208, 0.3), 0 8px 10px -6px rgba(187, 247, 208, 0.2);
     }
 
+    /* Prevent mobile browsers from interpreting a quick tap on quantity controls
+       as a double-tap zoom gesture, while keeping page pinch-zoom available. */
+    button,
+    .quantity-control,
+    .quantity-control input {
+      touch-action: manipulation;
+    }
+
+    button {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    .quantity-control input {
+      /* 16px prevents iOS Safari from zooming when the number field receives focus. */
+      font-size: 16px;
+    }
+
+    /* Match the reference page's order-detail panel proportions. */
+    .order-detail-card {
+      padding: 1rem;
+    }
+
+    .order-detail-output {
+      min-height: 120px;
+      height: auto;
+      overflow-y: hidden;
+      font-size: 0.75rem;
+      line-height: 1.625;
+    }
+
+    @media (min-width: 640px) {
+      .order-detail-card {
+        padding: 1.5rem;
+      }
+
+      .order-detail-output {
+        font-size: 0.875rem;
+      }
+    }
+
     .bounce-active:active {
       transform: scale(0.95);
     }
@@ -90,34 +186,448 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
+
+
+    /* ===== 可愛風主題覆寫 ===== */
+    :root {
+      --cute-blue-50: #f8fbff;
+      --cute-blue-100: #eef7ff;
+      --cute-blue-200: #d7ebff;
+      --cute-blue-300: #b8dcff;
+      --cute-blue-500: #6faef7;
+      --cute-blue-600: #4f95e8;
+      --cute-green-50: #f8fdf9;
+      --cute-green-100: #edf9f0;
+      --cute-green-200: #d2efd9;
+      --cute-green-300: #afe0bb;
+      --cute-green-500: #73bd82;
+      --cute-green-600: #55a968;
+      --cute-ink: #40516f;
+      --cute-muted: #8291aa;
+    }
+
+    html { background: #f8fbff; }
+
+    body {
+      color: var(--cute-ink);
+      min-height: 100vh;
+      background-attachment: scroll !important;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      pointer-events: none;
+      z-index: -1;
+      border-radius: 999px;
+      filter: blur(1px);
+      opacity: .65;
+    }
+
+    body::before {
+      width: 220px;
+      height: 220px;
+      left: -90px;
+      top: 180px;
+      background: radial-gradient(circle at 45% 45%, rgba(255,255,255,.9) 0 34%, rgba(190,222,255,.35) 35% 58%, transparent 59%);
+    }
+
+    body::after {
+      width: 260px;
+      height: 260px;
+      right: -120px;
+      bottom: 90px;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.88) 0 32%, rgba(200,239,210,.34) 33% 58%, transparent 59%);
+    }
+
+    body.mifen-theme {
+      background-color: #eaf5ff !important;
+      background-image:
+        radial-gradient(circle at 10% 12%, rgba(255,255,255,.96) 0 9%, transparent 10%),
+        radial-gradient(circle at 86% 18%, rgba(255,255,255,.78) 0 7%, transparent 8%),
+        linear-gradient(180deg, #ffffff 0%, #f6fbff 24%, #eaf5ff 68%, #dbeeff 100%) !important;
+      background-size: auto, auto, 100% 100% !important;
+      background-repeat: no-repeat !important;
+    }
+
+    body.nature-theme {
+      background-color: #e7f7eb !important;
+      background-image:
+        radial-gradient(circle at 12% 14%, rgba(255,255,255,.96) 0 9%, transparent 10%),
+        radial-gradient(circle at 88% 18%, rgba(255,255,255,.76) 0 7%, transparent 8%),
+        linear-gradient(180deg, #ffffff 0%, #f7fcf8 24%, #edf8f0 68%, #dff2e4 100%) !important;
+      background-size: auto, auto, 100% 100% !important;
+      background-repeat: no-repeat !important;
+    }
+
+    #header-el {
+      background: rgba(255,255,255,.82) !important;
+      border-bottom: 1px solid rgba(181,211,243,.5) !important;
+      box-shadow: 0 10px 28px rgba(96,142,194,.09) !important;
+      backdrop-filter: blur(18px) saturate(130%);
+      -webkit-backdrop-filter: blur(18px) saturate(130%);
+    }
+
+    #header-el > div:first-child { padding-top: 16px; padding-bottom: 10px; }
+
+    #header-icon-bg {
+      border-radius: 9999px !important;
+      overflow: hidden;
+      transform: none;
+      box-shadow: 0 8px 18px rgba(93,154,227,.18) !important;
+      border: 2px solid rgba(255,255,255,.9);
+    }
+
+    body.nature-theme #header-icon-bg {
+      box-shadow: 0 8px 18px rgba(85,169,104,.18) !important;
+    }
+
+    #header-el h1 {
+      color: #486184 !important;
+      letter-spacing: .04em !important;
+      font-weight: 700 !important;
+    }
+
+    body.nature-theme #header-el h1 { color: #4d7459 !important; }
+
+    #reset-btn-el {
+      border-radius: 999px !important;
+      background: #fff7f8 !important;
+      border-color: #ffd8df !important;
+      color: #dc7183 !important;
+      box-shadow: 0 4px 12px rgba(222,113,131,.08);
+    }
+
+    #tabs-container {
+      border-radius: 24px !important;
+      padding: 6px !important;
+      gap: 6px !important;
+      background: rgba(230,243,255,.88) !important;
+      border: 1px solid #cfe6fb !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 6px 14px rgba(101,153,207,.08);
+    }
+
+    body.nature-theme #tabs-container {
+      background: rgba(232,247,235,.9) !important;
+      border-color: #cee8d4 !important;
+    }
+
+    #tab-btn-mifen, #tab-btn-nature {
+      border-radius: 19px !important;
+      min-height: 46px;
+      font-weight: 700 !important;
+      letter-spacing: .03em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #tab-btn-mifen.bg-white {
+      color: #4f95e8 !important;
+      box-shadow: 0 5px 14px rgba(79,149,232,.12) !important;
+      border: 1px solid #d5eaff;
+    }
+
+    #tab-btn-nature.bg-white {
+      color: #55a968 !important;
+      box-shadow: 0 5px 14px rgba(85,169,104,.12) !important;
+      border: 1px solid #d5edd9;
+    }
+
+    main { position: relative; }
+    main::before {
+      content: '✦  ♡  ✧';
+      display: block;
+      text-align: center;
+      color: #9cc9f5;
+      letter-spacing: 1.1em;
+      font-size: 13px;
+      margin-bottom: 8px;
+      opacity: .8;
+    }
+    body.nature-theme main::before { color: #92cea0; }
+
+    #page-mifen > div:first-child,
+    #page-nature > div:first-child {
+      background: rgba(255,255,255,.62);
+      border: 1px dashed rgba(149,196,240,.65);
+      border-radius: 22px;
+      padding: 12px 14px;
+      box-shadow: 0 5px 16px rgba(91,142,196,.06);
+    }
+
+    #page-nature > div:first-child { border-color: rgba(139,199,151,.65); }
+
+    #page-mifen h2, #page-nature h2 {
+      color: #4b617e !important;
+      letter-spacing: .03em;
+    }
+    #page-nature h2 { color: #4e7258 !important; }
+
+    .soft-card {
+      background: rgba(255,255,255,.96) !important;
+      border-radius: 22px !important;
+      border: 1.5px solid #d8ebff !important;
+      box-shadow: 0 9px 20px rgba(85,139,194,.08), inset 0 1px 0 rgba(255,255,255,.95) !important;
+    }
+
+    body.nature-theme .soft-card {
+      border-color: #d6ecd9 !important;
+      box-shadow: 0 9px 20px rgba(88,144,100,.08), inset 0 1px 0 rgba(255,255,255,.95) !important;
+    }
+
+    .item-card {
+      padding: 15px !important;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
+    }
+
+    .item-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 13px 26px rgba(84,137,192,.12) !important;
+    }
+    body.nature-theme .item-card:hover { box-shadow: 0 13px 26px rgba(86,145,99,.12) !important; }
+
+    .item-card.ring-2 {
+      ring-width: 0 !important;
+      outline: 2px solid #a8d3ff;
+      outline-offset: 0;
+      background: #fff !important;
+    }
+    body.nature-theme .item-card.ring-2 { outline-color: #a8d8b2; }
+
+    .item-card .font-medium {
+      font-weight: 700 !important;
+      color: #455a78 !important;
+    }
+    body.nature-theme .item-card .font-medium { color: #4c6c54 !important; }
+
+    .quantity-control {
+      border-radius: 16px !important;
+      background: #f4f9ff !important;
+      border-color: #d8ebff !important;
+      padding: 4px !important;
+      gap: 4px !important;
+    }
+    body.nature-theme .quantity-control {
+      background: #f3fbf5 !important;
+      border-color: #d6ecd9 !important;
+    }
+
+    .quantity-control button {
+      border-radius: 12px !important;
+      box-shadow: none !important;
+    }
+
+    .quantity-control button:last-child {
+      background: linear-gradient(180deg,#82bdfb,#62a6f2) !important;
+      border: 1px solid #77b6f8;
+      box-shadow: 0 5px 10px rgba(80,150,227,.18) !important;
+    }
+    body.nature-theme .quantity-control button:last-child {
+      background: linear-gradient(180deg,#83ca91,#67b878) !important;
+      border-color: #77c486;
+      box-shadow: 0 5px 10px rgba(85,169,104,.18) !important;
+    }
+
+    .quantity-control input {
+      border-radius: 10px;
+      background: rgba(255,255,255,.92) !important;
+      min-height: 32px;
+    }
+
+    #page-nature > div.space-y-3 > div:first-child,
+    #page-nature > div.space-y-3 > div.flex:first-child {
+      border-bottom-style: dashed !important;
+      border-bottom-width: 1px !important;
+    }
+
+    .order-detail-card {
+      border-radius: 26px !important;
+      padding: 18px !important;
+      position: relative;
+      overflow: hidden;
+    }
+    .order-detail-card::after {
+      content: '♡';
+      position: absolute;
+      right: 16px;
+      top: 12px;
+      font-size: 20px;
+      color: #9dcaf6;
+      opacity: .72;
+      transform: rotate(8deg);
+    }
+    body.nature-theme .order-detail-card::after { color: #91c99c; }
+
+    .order-detail-output {
+      border-radius: 18px !important;
+      background: #fbfdff !important;
+      border: 1.5px dashed #b8dcff !important;
+      box-shadow: inset 0 2px 8px rgba(72,128,181,.04) !important;
+      color: #40516f !important;
+      padding: 16px !important;
+    }
+    body.nature-theme .order-detail-output {
+      background: #fbfefb !important;
+      border-color: #b7ddbF !important;
+      color: #46604c !important;
+    }
+
+    #preview-content-mifen button:first-child,
+    #preview-content-nature button:first-child {
+      border-radius: 999px !important;
+      min-height: 44px;
+      background: linear-gradient(180deg,#78b7f8,#559be8) !important;
+      box-shadow: 0 8px 16px rgba(79,149,232,.18) !important;
+    }
+    #preview-content-nature button:first-child {
+      background: linear-gradient(180deg,#7cc58a,#5eaf70) !important;
+      box-shadow: 0 8px 16px rgba(85,169,104,.18) !important;
+    }
+
+    #preview-content-mifen button:last-child,
+    #preview-content-nature button:last-child {
+      border-radius: 999px !important;
+      background: rgba(255,255,255,.95) !important;
+    }
+
+    #toast > div {
+      border-radius: 999px !important;
+      padding: 12px 20px !important;
+      font-weight: 700;
+      letter-spacing: .02em;
+      box-shadow: 0 14px 32px rgba(58,111,164,.18) !important;
+    }
+    body.mifen-theme #toast > div {
+      background: linear-gradient(180deg,#78b7f8,#559be8) !important;
+      border-color: #9dc9f7 !important;
+    }
+    body.nature-theme #toast > div {
+      background: linear-gradient(180deg,#7cc58a,#5eaf70) !important;
+      border-color: #9bd3a6 !important;
+    }
+
+    #back-to-top-btn,
+    #float-preview-btn {
+      border-radius: 18px 0 0 18px !important;
+      border-right: 0 !important;
+    }
+
+    body.mifen-theme #back-to-top-btn {
+      color: #4f95e8 !important;
+      border-color: #cfe6fb !important;
+      background: rgba(255,255,255,.94) !important;
+      box-shadow: 0 9px 18px rgba(79,149,232,.10) !important;
+    }
+    body.nature-theme #back-to-top-btn {
+      color: #55a968 !important;
+      border-color: #d0ead6 !important;
+      background: rgba(255,255,255,.94) !important;
+      box-shadow: 0 9px 18px rgba(85,169,104,.10) !important;
+    }
+
+    #float-preview-btn {
+      background: linear-gradient(180deg,#78b7f8,#559be8) !important;
+      border-color: #9dc9f7 !important;
+      box-shadow: 0 10px 22px rgba(79,149,232,.20) !important;
+    }
+    body.nature-theme #float-preview-btn {
+      background: linear-gradient(180deg,#7cc58a,#5eaf70) !important;
+      border-color: #9bd3a6 !important;
+      box-shadow: 0 10px 22px rgba(85,169,104,.20) !important;
+    }
+
+    .mifen-card-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mifen-quick-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      padding: 0 4px;
+    }
+
+    .mifen-quick-btn {
+      min-height: 32px;
+      border-radius: 999px;
+      border: 1px solid #cfe6fb;
+      background: rgba(255,255,255,.88);
+      color: #5797df;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(79,149,232,.08);
+      transition: transform .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+
+    .mifen-quick-btn:hover {
+      background: #f2f8ff;
+      box-shadow: 0 6px 13px rgba(79,149,232,.12);
+    }
+
+    .mifen-quick-btn:active { transform: scale(.96); }
+
+    @media (max-width: 639px) {
+      #header-el > div:first-child { padding-left: 14px; padding-right: 14px; }
+      #header-icon-bg { width: 38px !important; height: 38px !important; border-radius: 9999px !important; }
+      #header-el h1 { font-size: 1rem !important; }
+      #tabs-container { border-radius: 20px !important; }
+      #tab-btn-mifen, #tab-btn-nature { min-height: 42px; border-radius: 15px !important; }
+      .item-card { border-radius: 18px !important; padding: 13px !important; }
+      .order-detail-card { border-radius: 22px !important; padding: 15px !important; }
+      .order-detail-output { border-radius: 16px !important; padding: 14px !important; }
+    }
+
+
+    /* v13 細節調整 */
+    .quantity-control input {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      padding: 0 !important;
+      line-height: 32px !important;
+      height: 32px !important;
+      -moz-appearance: textfield;
+    }
+    .quantity-control input::-webkit-outer-spin-button,
+    .quantity-control input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    #page-nature > div.space-y-3 > div:first-child,
+    #page-nature > div.space-y-3 > div.flex:first-child {
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+
   </style>
 </head>
-<body id="body-el" class="h-full text-slate-700 antialiased selection:bg-brand-200 selection:text-brand-800 pb-64">
+<body id="body-el" class="mifen-theme min-h-screen text-slate-700 antialiased selection:bg-brand-200 selection:text-brand-800">
 
   <header class="sticky top-0 z-20 glass-header border-b border-brand-100 shadow-sm" id="header-el">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div id="header-icon-bg" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-300 to-brand-500 flex items-center justify-center text-white shadow-md shadow-brand-200 transition-colors duration-300">
-          <i class="fa-solid fa-basket-shopping text-lg"></i>
+        <div id="header-icon-bg" class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-md shadow-brand-200 transition-colors duration-300">
+          <img src="quickorder_icon.png" alt="快速叫貨器" class="w-full h-full object-cover rounded-full">
         </div>
         <div>
           <h1 class="text-lg sm:text-xl font-bold text-slate-800 tracking-tight">
-            快速叫貨器 - 米粉&自然風
+            快速叫貨器
           </h1>
         </div>
       </div>
-
-      <button id="reset-btn-el" onclick="confirmResetCurrentPage()" class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50/70 text-rose-600 hover:bg-rose-100/80 text-xs font-medium transition duration-200 flex items-center gap-1.5 bounce-active">
-        <i class="fa-solid fa-rotate-right"></i>
-        <span class="hidden sm:inline">重置本頁</span>
-      </button>
     </div>
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-1 pb-3">
       <div id="tabs-container" class="grid grid-cols-2 gap-2 p-1.5 bg-sky-100/70 rounded-2xl border border-sky-200/60 transition-colors duration-300">
         <button id="tab-btn-mifen" onclick="switchPage('mifen')" class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 bg-white text-brand-600 shadow-sm font-semibold">
           <i class="fa-solid fa-bowl-food text-brand-500"></i>
-          <span>米粉叫貨</span>
+          <span>米粉</span>
           <span id="badge-mifen" class="hidden ml-1 px-2 py-0.5 text-xs rounded-full bg-brand-500 text-white font-bold">0</span>
         </button>
         <button id="tab-btn-nature" onclick="switchPage('nature')" class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 text-slate-600 hover:text-emerald-600">
@@ -129,13 +639,16 @@
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 mt-5 space-y-6">
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 mt-5 pb-12 sm:pb-16 space-y-6">
 
-    <section id="page-mifen" class="space-y-6">
+    <section id="page-mifen" class="space-y-8" style="margin-top: 1.5rem;">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <div class="w-2.5 h-6 bg-brand-500 rounded-full"></div>
-          <h2 class="font-bold text-slate-800 text-base sm:text-lg">米粉叫貨品項 (共 10 項)</h2>
+          <div>
+            <h2 class="font-bold text-slate-800 text-base sm:text-lg">米粉叫貨品項 (共 10 項)</h2>
+            <p class="text-xs text-slate-400 mt-1">按 ＋／－ 數量會 ＋10／－10</p>
+          </div>
         </div>
         <span class="text-xs text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200 font-medium">各式各樣米粉</span>
       </div>
@@ -145,20 +658,16 @@
       </div>
 
       <!-- Rice Noodles Text Preview (Positioned below item grid) -->
-      <div id="preview-block-mifen" class="soft-card rounded-2xl p-4 border-2 border-brand-200 bg-white/95 shadow-md space-y-3">
+      <div id="preview-block-mifen" class="order-detail-card soft-card rounded-2xl border-2 border-brand-200 bg-white/95 shadow-md space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-file-lines text-brand-500 text-base"></i>
-            <h3 class="font-bold text-slate-800 text-sm sm:text-base">【米粉叫貨】文字預覽區</h3>
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base">【米粉】訂購明細</h3>
           </div>
-          <button onclick="togglePreviewCollapse()" class="text-xs text-brand-600 hover:text-brand-800 font-medium flex items-center gap-1">
-            <i id="collapse-icon-mifen" class="fa-solid fa-chevron-down"></i>
-            <span id="collapse-text-mifen">收合</span>
-          </button>
         </div>
 
         <div id="preview-content-mifen" class="space-y-2.5">
-          <textarea id="summary-mifen" readonly rows="8" class="w-full p-3 rounded-xl border border-sky-200 bg-slate-50 font-mono text-xs text-slate-700 focus:outline-none resize-none leading-relaxed shadow-inner" placeholder="選擇商品數量後，叫貨文字將自動顯示於此..."></textarea>
+          <textarea id="summary-mifen" readonly rows="6" class="order-detail-output w-full p-3.5 sm:p-4 rounded-xl border border-sky-200 bg-slate-50 font-mono text-slate-700 focus:outline-none resize-none shadow-inner" placeholder="選擇商品數量後，叫貨文字將自動顯示於此..."></textarea>
 
           <div class="flex gap-2">
             <button onclick="copyToClipboard('summary-mifen')" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold text-xs shadow-md shadow-brand-200 flex items-center justify-center gap-1.5 transition bounce-active">
@@ -198,7 +707,7 @@
       <!-- Section 2: 馬桶清潔球Bref -->
       <div class="space-y-3">
         <div class="flex items-center gap-2 border-b border-emerald-200 pb-2">
-          <i class="fa-solid fa-sparkles text-emerald-500"></i>
+          <i class="fa-solid fa-soap text-emerald-500"></i>
           <h3 class="font-bold text-slate-800 text-sm sm:text-base">馬桶清潔球 Bref (10入/箱)</h3>
           <span class="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">3 項</span>
         </div>
@@ -232,20 +741,16 @@
       </div>
 
       <!-- Nature Text Preview (Positioned below all item sections) -->
-      <div id="preview-block-nature" class="soft-card rounded-2xl p-4 border-2 border-emerald-200 bg-white/95 shadow-md space-y-3">
+      <div id="preview-block-nature" class="order-detail-card soft-card rounded-2xl border-2 border-emerald-200 bg-white/95 shadow-md space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-file-lines text-emerald-600 text-base"></i>
-            <h3 class="font-bold text-slate-800 text-sm sm:text-base">【自然風】文字預覽區</h3>
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base">【自然風】訂購明細</h3>
           </div>
-          <button onclick="togglePreviewCollapse()" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1">
-            <i id="collapse-icon-nature" class="fa-solid fa-chevron-down"></i>
-            <span id="collapse-text-nature">收合</span>
-          </button>
         </div>
 
         <div id="preview-content-nature" class="space-y-2.5">
-          <textarea id="summary-nature" readonly rows="8" class="w-full p-3 rounded-xl border border-emerald-200 bg-slate-50 font-mono text-xs text-slate-700 focus:outline-none resize-none leading-relaxed shadow-inner" placeholder="選擇商品數量後，自然風叫貨文字將自動顯示於此..."></textarea>
+          <textarea id="summary-nature" readonly rows="6" class="order-detail-output w-full p-3.5 sm:p-4 rounded-xl border border-emerald-200 bg-slate-50 font-mono text-slate-700 focus:outline-none resize-none shadow-inner" placeholder="選擇商品數量後，自然風訂購明細將自動顯示在這裡(*´∀`*)"></textarea>
 
           <div class="flex gap-2">
             <button onclick="copyToClipboard('summary-nature')" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-200 flex items-center justify-center gap-1.5 transition bounce-active">
@@ -264,9 +769,9 @@
   </main>
 
   <!-- Toast Message Alert -->
-  <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 transform translate-y-10 opacity-0 transition-all duration-300 pointer-events-none">
+  <div id="toast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 opacity-0 transition-opacity duration-300 pointer-events-none">
     <div class="bg-slate-800/90 backdrop-blur-md text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-sm font-medium border border-slate-700">
-      <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+      <i id="toast-icon" class="fa-solid fa-circle-check text-white text-lg"></i>
       <span id="toast-msg">已成功複製到剪貼簿！</span>
     </div>
   </div>
@@ -275,7 +780,7 @@
   <div class="fixed right-0 top-1/2 -translate-y-1/2 z-30 pointer-events-none">
     <div class="pointer-events-auto flex flex-col gap-2">
       <!-- Back to Top Button -->
-      <button onclick="scrollToTop()" class="py-3 px-2.5 rounded-l-2xl bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-lg shadow-slate-800/20 border-y border-l border-slate-500 transition-all duration-300 bounce-active group" title="回到上方">
+      <button id="back-to-top-btn" onclick="scrollToTop()" class="py-3 px-2.5 rounded-l-2xl text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-lg border-y border-l transition-all duration-300 bounce-active group" title="回到上方">
         <i class="fa-solid fa-arrow-up text-xs group-hover:-translate-y-0.5 transition-transform"></i>
         <span class="tracking-widest" style="writing-mode: vertical-rl;">回到上方</span>
       </button>
@@ -291,10 +796,10 @@
   <script>
     const DATA = {
       mifen: [
-        { name: "➊粗☆一公斤", category: "米粉叫貨" },
-        { name: "➋細★一公斤", category: "米粉叫貨" },
-        { name: "➌粗☆100克", category: "米粉叫貨" },
-        { name: "➍細★100克", category: "米粉叫貨" },
+        { name: "❶粗☆一公斤", category: "米粉叫貨" },
+        { name: "❷細★一公斤", category: "米粉叫貨" },
+        { name: "❸粗☆100克", category: "米粉叫貨" },
+        { name: "❹細★100克", category: "米粉叫貨" },
         { name: "❺黑芝麻(500克)", category: "米粉叫貨" },
         { name: "❻米含量低(一公斤)", category: "米粉叫貨" },
         { name: "❼紅薯粉絲(一公斤)", category: "米粉叫貨" },
@@ -314,7 +819,7 @@
         },
         sec2: {
           title: "馬桶清潔球 Bref (10入/箱)",
-          icon: "fa-sparkles",
+          icon: "fa-soap",
           items: ["麝香薄荷", "清爽橙花", "永恆紫羅蘭"]
         },
         sec3: {
@@ -332,7 +837,6 @@
 
     const state = {};
     let currentPage = 'mifen';
-    let isPreviewCollapsed = false;
 
     document.addEventListener('DOMContentLoaded', () => {
       renderMifenGrid();
@@ -371,7 +875,7 @@
       const isSelected = count > 0;
       
       const isNature = pageType === 'nature';
-      const ringColor = isNature ? 'ring-emerald-400/80 bg-emerald-50/30' : 'ring-brand-400/80 bg-sky-50/30';
+      const ringColor = isNature ? 'ring-emerald-400/80 bg-white' : 'ring-brand-400/80 bg-white';
       const hoverColor = isNature ? 'hover:border-emerald-300' : 'hover:border-brand-300';
       const badgeBg = isNature ? 'bg-emerald-100 text-emerald-600' : 'bg-brand-100 text-brand-600';
       const btnBg = isNature ? 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-200 text-white' : 'bg-brand-500 hover:bg-brand-600 shadow-brand-200 text-white';
@@ -380,7 +884,7 @@
       const borderTheme = isNature ? 'border-emerald-100 bg-emerald-50/80' : 'border-sky-100 bg-sky-50/80';
       const borderMinus = isNature ? 'border-emerald-200' : 'border-sky-200';
 
-      return `
+      const cardHtml = `
         <div id="card-${id}" class="item-card soft-card rounded-2xl p-3.5 flex items-center justify-between gap-2 transition-all duration-200 ${hoverColor} ${isSelected ? `ring-2 ${ringColor}` : ''}">
           <div class="flex-1 min-w-0">
             <div class="font-medium text-slate-800 text-sm sm:text-base truncate" title="${name}">
@@ -391,24 +895,43 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-1.5 ${borderTheme} p-1 rounded-xl border shrink-0">
-            <button onclick="changeQty('${name}', -1)" class="w-8 h-8 rounded-lg bg-white ${borderMinus} text-slate-600 ${minusHover} flex items-center justify-center font-bold text-sm transition bounce-active disabled:opacity-40" ${count === 0 ? 'disabled' : ''}>
+          <div class="quantity-control flex items-center gap-1.5 ${borderTheme} p-1 rounded-xl border shrink-0">
+            <button type="button" aria-label="減少 ${name} 數量" onclick="changeQty('${name}', -1)" class="w-8 h-8 rounded-lg bg-white ${borderMinus} text-slate-600 ${minusHover} flex items-center justify-center font-bold text-sm transition bounce-active disabled:opacity-40" ${count === 0 ? 'disabled' : ''}>
               <i class="fa-solid fa-minus text-xs"></i>
             </button>
             
-            <input type="number" min="0" value="${count}" onchange="setQty('${name}', this.value)" class="w-10 text-center font-bold text-sm bg-transparent border-none ${textInputColor} focus:outline-none focus:ring-0">
+            <input type="number" inputmode="numeric" min="0" value="${count}" aria-label="${name} 數量" onchange="setQty('${name}', this.value)" class="w-10 text-center font-bold text-sm bg-transparent border-none ${textInputColor} focus:outline-none focus:ring-0">
 
-            <button onclick="changeQty('${name}', 1)" class="w-8 h-8 rounded-lg ${btnBg} flex items-center justify-center font-bold text-sm transition bounce-active shadow-sm">
+            <button type="button" aria-label="增加 ${name} 數量" onclick="changeQty('${name}', 1)" class="w-8 h-8 rounded-lg ${btnBg} flex items-center justify-center font-bold text-sm transition bounce-active shadow-sm">
               <i class="fa-solid fa-plus text-xs"></i>
             </button>
           </div>
-        </div>
-      `;
+        </div>`;
+
+      if (pageType === 'mifen') {
+        return `
+          <div class="mifen-card-wrap">
+            ${cardHtml}
+            <div class="mifen-quick-buttons">
+              <button type="button" class="mifen-quick-btn" onclick="quickAdd('${name}', 20)">+20</button>
+              <button type="button" class="mifen-quick-btn" onclick="quickAdd('${name}', 50)">+50</button>
+            </div>
+          </div>`;
+      }
+
+      return cardHtml;
+    }
+
+    function quickAdd(name, amount) {
+      state[name] = (state[name] || 0) + amount;
+      refreshUI();
     }
 
     function changeQty(name, delta) {
       const current = state[name] || 0;
-      const step = DATA.mifen.some(item => item.name === name) ? 10 : 1;
+      const step = DATA.mifen.some(item => item.name === name)
+        ? 10
+        : 1;
       state[name] = Math.max(0, current + (delta * step));
       refreshUI();
     }
@@ -446,7 +969,9 @@
         mifenText += mifenLines.join('\n');
       }
 
-      document.getElementById('summary-mifen').value = mifenText;
+      const summaryMifen = document.getElementById('summary-mifen');
+      summaryMifen.value = mifenText;
+      autoResizeTextarea(summaryMifen);
       document.getElementById('badge-mifen').textContent = mifenCount;
       document.getElementById('badge-mifen').classList.toggle('hidden', mifenCount === 0);
 
@@ -478,9 +1003,17 @@
         natureText += natureSectionTexts.join('\n\n');
       }
 
-      document.getElementById('summary-nature').value = natureText;
+      const summaryNature = document.getElementById('summary-nature');
+      summaryNature.value = natureText;
+      autoResizeTextarea(summaryNature);
       document.getElementById('badge-nature').textContent = natureCount;
       document.getElementById('badge-nature').classList.toggle('hidden', natureCount === 0);
+    }
+
+    function autoResizeTextarea(textarea) {
+      if (!textarea) return;
+      textarea.style.height = 'auto';
+      textarea.style.height = `${Math.max(textarea.scrollHeight, 120)}px`;
     }
 
     function switchPage(page) {
@@ -496,8 +1029,9 @@
 
       if (page === 'mifen') {
         bodyEl.classList.remove('nature-theme');
+        bodyEl.classList.add('mifen-theme');
         tabsContainer.className = "grid grid-cols-2 gap-2 p-1.5 bg-sky-100/70 rounded-2xl border border-sky-200/60 transition-colors duration-300";
-        headerIconBg.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-300 to-brand-500 flex items-center justify-center text-white shadow-md shadow-brand-200 transition-colors duration-300";
+        headerIconBg.className = "w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-md shadow-brand-200 transition-colors duration-300";
         floatPreviewBtn.className = "py-3.5 px-2.5 rounded-l-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-xl shadow-brand-500/30 border-y border-l border-brand-300 transition-all duration-300 bounce-active group";
 
         mifenSec.classList.remove('hidden');
@@ -505,9 +1039,10 @@
         btnMifen.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 bg-white text-brand-600 shadow-sm font-semibold";
         btnNature.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 text-slate-600 hover:text-emerald-600";
       } else {
+        bodyEl.classList.remove('mifen-theme');
         bodyEl.classList.add('nature-theme');
         tabsContainer.className = "grid grid-cols-2 gap-2 p-1.5 bg-emerald-100/70 rounded-2xl border border-emerald-200/60 transition-colors duration-300";
-        headerIconBg.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-300 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-emerald-200 transition-colors duration-300";
+        headerIconBg.className = "w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-md shadow-emerald-200 transition-colors duration-300";
         floatPreviewBtn.className = "py-3.5 px-2.5 rounded-l-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-xl shadow-emerald-500/30 border-y border-l border-emerald-300 transition-all duration-300 bounce-active group";
 
         mifenSec.classList.add('hidden');
@@ -515,6 +1050,11 @@
         btnNature.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 bg-white text-emerald-600 shadow-sm font-semibold";
         btnMifen.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 text-slate-600 hover:text-brand-600";
       }
+
+      requestAnimationFrame(() => {
+        const activeSummary = document.getElementById(page === 'mifen' ? 'summary-mifen' : 'summary-nature');
+        autoResizeTextarea(activeSummary);
+      });
     }
 
     function scrollToTop() {
@@ -526,34 +1066,6 @@
       const el = document.getElementById(targetId);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-
-    function togglePreviewCollapse() {
-      isPreviewCollapsed = !isPreviewCollapsed;
-      const contentMifen = document.getElementById('preview-content-mifen');
-      const contentNature = document.getElementById('preview-content-nature');
-
-      const iconMifen = document.getElementById('collapse-icon-mifen');
-      const iconNature = document.getElementById('collapse-icon-nature');
-
-      const textMifen = document.getElementById('collapse-text-mifen');
-      const textNature = document.getElementById('collapse-text-nature');
-
-      if (isPreviewCollapsed) {
-        contentMifen.classList.add('hidden');
-        contentNature.classList.add('hidden');
-        iconMifen.className = 'fa-solid fa-chevron-up';
-        iconNature.className = 'fa-solid fa-chevron-up';
-        textMifen.textContent = '展開';
-        textNature.textContent = '展開';
-      } else {
-        contentMifen.classList.remove('hidden');
-        contentNature.classList.remove('hidden');
-        iconMifen.className = 'fa-solid fa-chevron-down';
-        iconNature.className = 'fa-solid fa-chevron-down';
-        textMifen.textContent = '收合';
-        textNature.textContent = '收合';
       }
     }
 
@@ -572,10 +1084,10 @@
       }
 
       if (success) {
-        showToast('已成功複製叫貨文字！可直接貼至 LINE');
+        showToast('已成功複製叫貨文字！');
       } else if (navigator.clipboard) {
         navigator.clipboard.writeText(textarea.value).then(() => {
-          showToast('已成功複製叫貨文字！可直接貼至 LINE');
+          showToast('已成功複製叫貨文字！');
         }).catch(() => {
           showToast('複製失敗，請手動全選複製', 'fa-triangle-exclamation', 'text-amber-400');
         });
@@ -604,15 +1116,15 @@
     function showToast(msg, iconClass = 'fa-circle-check', iconColor = 'text-emerald-400') {
       const toast = document.getElementById('toast');
       document.getElementById('toast-msg').textContent = msg;
-      document.getElementById('toast-icon').className = `fa-solid ${iconClass} ${iconColor} text-lg`;
+      document.getElementById('toast-icon').className = `fa-solid ${iconClass} text-white text-lg`;
 
-      toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
-      toast.classList.add('translate-y-0', 'opacity-100');
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
 
       clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => {
-        toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
-        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+        toast.classList.remove('opacity-100');
       }, 2500);
     }
   </script>
