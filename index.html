@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="zh-TW" class="h-full bg-slate-50">
 <head>
@@ -14,8 +15,8 @@
   <link rel="shortcut icon" type="image/png" href="quickorder_icon.png">
 
   <!-- iPhone / iPad Safari：加入主畫面、喜好項目使用的 Apple 圖示：方形 -->
-  <link rel="apple-touch-icon" sizes="180x180" href="quickorder_icon.png">
-  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="quickorder_icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="quickorder_appicon.png">
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="quickorder_appicon.png">
   <meta name="apple-mobile-web-app-title" content="快速叫貨器">
 <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -1071,9 +1072,8 @@
         // 切換米粉／自然風頁面後，一律回到整個頁面的最上方。
         // 同時處理 iPhone Safari、Chrome 等不同捲動容器。
         requestAnimationFrame(() => {
-          window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
+          // 平滑回到最上方，避免切換頁面時瞬間跳動／閃爍
+          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
         });
       });
     }
