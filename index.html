@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="zh-TW" class="h-full bg-slate-50">
 <head>
@@ -36,7 +37,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@200..900&display=swap" rel="stylesheet">
   
   <script>
     tailwind.config = {
@@ -56,7 +57,7 @@
             }
           },
           fontFamily: {
-            sans: ['"Noto Sans TC"', '"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['"Chiron GoRound TC"', 'sans-serif'],
           }
         }
       }
@@ -65,7 +66,10 @@
 
   <style>
     body {
-      font-family: 'Noto Sans TC', sans-serif;
+      font-family: "Chiron GoRound TC", sans-serif;
+      font-weight: 300;
+      font-optical-sizing: auto;
+      font-style: normal;
       -webkit-tap-highlight-color: transparent;
       background-color: #f4f9fd;
       transition: background-color 0.3s ease;
@@ -637,6 +641,7 @@
       #header-preview-btn span { display: inline !important; }
     }
 
+    .font-mono, textarea, input, button { font-family: "Chiron GoRound TC", sans-serif !important; font-optical-sizing: auto; font-style: normal; }
   </style>
 </head>
 <body id="body-el" class="mifen-theme min-h-screen text-slate-700 antialiased selection:bg-brand-200 selection:text-brand-800">
