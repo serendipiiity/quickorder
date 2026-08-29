@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="zh-TW" class="h-full bg-slate-50">
 <head>
@@ -605,6 +606,17 @@
       padding-bottom: 0 !important;
     }
 
+    #header-preview-btn {
+      min-height: 38px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 420px) {
+      #header-el > div:first-child { gap: 8px; }
+      #header-preview-btn { padding-left: 10px; padding-right: 10px; font-size: 11px; }
+      #header-preview-btn span { display: inline !important; }
+    }
+
   </style>
 </head>
 <body id="body-el" class="mifen-theme min-h-screen text-slate-700 antialiased selection:bg-brand-200 selection:text-brand-800">
@@ -621,6 +633,10 @@
           </h1>
         </div>
       </div>
+      <button id="header-preview-btn" onclick="scrollToPreview()" class="ml-auto px-3 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-md shadow-brand-200 transition bounce-active whitespace-nowrap">
+        <i class="fa-solid fa-arrow-down-short-wide"></i>
+        <span>前往複製區</span>
+      </button>
     </div>
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-1 pb-3">
@@ -779,17 +795,7 @@
   <!-- Right Floating Buttons (Vertical Text in Page Middle) -->
   <div class="fixed right-0 top-1/2 -translate-y-1/2 z-30 pointer-events-none">
     <div class="pointer-events-auto flex flex-col gap-2">
-      <!-- Back to Top Button -->
-      <button id="back-to-top-btn" onclick="scrollToTop()" class="py-3 px-2.5 rounded-l-2xl text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-lg border-y border-l transition-all duration-300 bounce-active group" title="回到上方">
-        <i class="fa-solid fa-arrow-up text-xs group-hover:-translate-y-0.5 transition-transform"></i>
-        <span class="tracking-widest" style="writing-mode: vertical-rl;">回到上方</span>
-      </button>
 
-      <!-- Go to Preview Button -->
-      <button id="float-preview-btn" onclick="scrollToPreview()" class="py-3.5 px-2.5 rounded-l-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-xl shadow-brand-500/30 border-y border-l border-brand-300 transition-all duration-300 bounce-active group" title="前往複製區">
-        <i class="fa-solid fa-arrow-down-short-wide text-xs group-hover:translate-y-0.5 transition-transform"></i>
-        <span class="tracking-widest" style="writing-mode: vertical-rl;">前往複製區</span>
-      </button>
     </div>
   </div>
 
@@ -1025,14 +1031,14 @@
       const bodyEl = document.getElementById('body-el');
       const tabsContainer = document.getElementById('tabs-container');
       const headerIconBg = document.getElementById('header-icon-bg');
-      const floatPreviewBtn = document.getElementById('float-preview-btn');
+      const headerPreviewBtn = document.getElementById('header-preview-btn');
 
       if (page === 'mifen') {
         bodyEl.classList.remove('nature-theme');
         bodyEl.classList.add('mifen-theme');
         tabsContainer.className = "grid grid-cols-2 gap-2 p-1.5 bg-sky-100/70 rounded-2xl border border-sky-200/60 transition-colors duration-300";
         headerIconBg.className = "w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-md shadow-brand-200 transition-colors duration-300";
-        floatPreviewBtn.className = "py-3.5 px-2.5 rounded-l-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-xl shadow-brand-500/30 border-y border-l border-brand-300 transition-all duration-300 bounce-active group";
+        headerPreviewBtn.className = "ml-auto px-3 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-md shadow-brand-200 transition bounce-active whitespace-nowrap";
 
         mifenSec.classList.remove('hidden');
         natureSec.classList.add('hidden');
@@ -1043,13 +1049,15 @@
         bodyEl.classList.add('nature-theme');
         tabsContainer.className = "grid grid-cols-2 gap-2 p-1.5 bg-emerald-100/70 rounded-2xl border border-emerald-200/60 transition-colors duration-300";
         headerIconBg.className = "w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-md shadow-emerald-200 transition-colors duration-300";
-        floatPreviewBtn.className = "py-3.5 px-2.5 rounded-l-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm flex flex-col items-center gap-1.5 shadow-xl shadow-emerald-500/30 border-y border-l border-emerald-300 transition-all duration-300 bounce-active group";
+        headerPreviewBtn.className = "ml-auto px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-md shadow-emerald-200 transition bounce-active whitespace-nowrap";
 
         mifenSec.classList.add('hidden');
         natureSec.classList.remove('hidden');
         btnNature.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 bg-white text-emerald-600 shadow-sm font-semibold";
         btnMifen.className = "flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 text-slate-600 hover:text-brand-600";
       }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
       requestAnimationFrame(() => {
         const activeSummary = document.getElementById(page === 'mifen' ? 'summary-mifen' : 'summary-nature');
