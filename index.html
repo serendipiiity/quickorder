@@ -57,6 +57,26 @@
         }
       }
     }
+
+    function autoResizeMissingTextarea(textarea) {
+      if (!textarea) return;
+      textarea.style.height = 'auto';
+      textarea.style.height = `${Math.max(textarea.scrollHeight, 120)}px`;
+    }
+
+
+    function syncPendingMifenHeight() {
+      const order = document.getElementById('summary-mifen');
+      const pending = document.getElementById('pending-mifen-text');
+      if (!order || !pending) return;
+      const targetHeight = Math.max(order.getBoundingClientRect().height, 120);
+      pending.style.height = `${targetHeight}px`;
+      pending.style.minHeight = `${targetHeight}px`;
+      pending.style.maxHeight = `${targetHeight}px`;
+      pending.style.overflowY = 'auto';
+      pending.style.resize = 'none';
+    }
+
   </script>
 
   <style>
@@ -637,7 +657,14 @@
     }
 
     .font-mono, textarea, input, button { font-family: "Chiron GoRound TC", sans-serif !important; font-optical-sizing: auto; font-style: normal; }
-  </style>
+  
+    /* 未到貨文字框：依貼上內容自動調整高度 */
+    #summary-mifen-total {
+      overflow-y: hidden !important;
+      resize: none;
+      min-height: 120px;
+    }
+</style>
 </head>
 <body id="body-el" class="mifen-theme min-h-screen text-slate-700 antialiased selection:bg-brand-200 selection:text-brand-800">
 
@@ -716,6 +743,31 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <!-- 未到貨填寫 -->
+      <div class="order-detail-card soft-card rounded-2xl border-2 border-brand-200 bg-white/95 shadow-md space-y-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-box-open text-brand-500 text-base"></i>
+          <h3 class="font-bold text-slate-800 text-sm sm:text-base">【米粉】未到貨</h3>
+        </div>
+        <p class="text-xs text-slate-400">可直接貼上未到貨文字，系統會自動辨識 13 個品項與數量並加入下方加總</p>
+        <textarea id="pending-mifen-text" rows="6" oninput="parsePendingMifenText(); syncPendingMifenHeight()" class="order-detail-output w-full p-3.5 sm:p-4 rounded-xl border border-sky-200 bg-slate-50 font-mono text-slate-700 focus:outline-none resize-none shadow-inner" placeholder="貼上未到貨品項、數量"></textarea>
+        <button onclick="resetPendingMifen()" class="w-full py-2.5 px-3 rounded-xl border border-sky-200 bg-white hover:bg-sky-50 text-slate-600 font-medium text-xs flex items-center justify-center gap-1 transition">
+          <i class="fa-solid fa-rotate-left text-slate-400"></i><span>清空未到貨</span>
+        </button>
+      </div>
+
+      <!-- 訂購 + 未到貨加總 -->
+      <div class="order-detail-card soft-card rounded-2xl border-2 border-brand-200 bg-white/95 shadow-md space-y-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-calculator text-brand-500 text-base"></i>
+          <h3 class="font-bold text-slate-800 text-sm sm:text-base">【米粉】訂購＋未到貨加總</h3>
+        </div>
+        <textarea id="summary-mifen-total" readonly rows="6" class="order-detail-output w-full p-3.5 sm:p-4 rounded-xl border border-sky-200 bg-slate-50 font-mono text-slate-700 focus:outline-none resize-none shadow-inner" oninput="autoResizeMissingTextarea(this)"></textarea>
+        <button onclick="copyToClipboard('summary-mifen-total')" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold text-xs shadow-md shadow-brand-200 flex items-center justify-center gap-1.5 transition bounce-active">
+          <i class="fa-solid fa-copy"></i><span>複製加總文字</span>
+        </button>
       </div>
     </section>
 
@@ -822,19 +874,19 @@
   <script>
     const DATA = {
       mifen: [
-        { name: "❶粗☆一公斤", category: "米粉叫貨" },
-        { name: "❷細★一公斤", category: "米粉叫貨" },
-        { name: "❸粗☆100克", category: "米粉叫貨" },
-        { name: "❹細★100克", category: "米粉叫貨" },
-        { name: "❺黑芝麻(500克)", category: "米粉叫貨" },
-        { name: "❻米含量低(一公斤)", category: "米粉叫貨" },
-        { name: "❼紅薯粉絲(一公斤)", category: "米粉叫貨" },
-        { name: "❽越南河粉△寬版(500克)", category: "米粉叫貨" },
-        { name: "❾越南河粉▲細版(500克)", category: "米粉叫貨" },
-        { name: "①⓪越南米線500克", category: "米粉叫貨" },
-        { name: "❶❶黑芝麻100克", category: "米粉叫貨" },
-        { name: "❶❷粗☆500克", category: "米粉叫貨" },
-        { name: "❶❸細★500克", category: "米粉叫貨" }
+        { name: "❶粗(E)☆一公斤", category: "米粉叫貨" },
+        { name: "❷細(G)★一公斤", category: "米粉叫貨" },
+        { name: "❸粗(E)☆《500克》", category: "米粉叫貨" },
+        { name: "❹細(G)★《500克》", category: "米粉叫貨" },
+        { name: "❺粗(E)☆【100克】", category: "米粉叫貨" },
+        { name: "❻細(G)★【100克】", category: "米粉叫貨" },
+        { name: "❼黑芝麻《500克》", category: "米粉叫貨" },
+        { name: "❽黑芝麻【100克】", category: "米粉叫貨" },
+        { name: "❾米含量低(一公斤)", category: "米粉叫貨" },
+        { name: "①⓪紅薯粉絲(一公斤)", category: "米粉叫貨" },
+        { name: "❶❶越南河粉△寬版《500克》", category: "米粉叫貨" },
+        { name: "❶❷越南河粉▲細版《500克》", category: "米粉叫貨" },
+        { name: "❶❸越南米線《500克》", category: "米粉叫貨" }
       ],
       nature: {
         sec1: {
@@ -865,10 +917,14 @@
     };
 
     const state = {};
+    const pendingMifen = {};
     let currentPage = 'mifen';
 
     document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => autoResizeMissingTextarea(document.getElementById('summary-mifen-total')), 0);
+      setTimeout(syncPendingMifenHeight, 0);
       renderMifenGrid();
+      renderPendingMifen();
       renderNatureGrid();
       updateAllSummaries();
     });
@@ -879,6 +935,76 @@
         state[item.name] = state[item.name] || 0;
         return createItemCardHtml(item.name, idx, 'mifen');
       }).join('');
+    }
+
+    function renderPendingMifen() {
+      // 未到貨改為直接貼上文字，不需要逐項選擇數量。
+      parsePendingMifenText(false);
+    }
+
+    function normalizeMifenName(value) {
+      return String(value || '')
+        .replace(/\s+/g, '')
+        .replace(/[《》【】()（）]/g, '')
+        .replace(/克/g, '克')
+        .toLowerCase();
+    }
+
+    function parsePendingMifenText(shouldUpdate = true) {
+      const textarea = document.getElementById('pending-mifen-text');
+      if (!textarea) return;
+      const text = textarea.value || '';
+
+      DATA.mifen.forEach(item => pendingMifen[item.name] = 0);
+
+      const lines = text.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+      lines.forEach(line => {
+        if (/❌/.test(line)) return;
+
+        // 先抓該行數量：支援 x20、X20、×20、*20、＊20、數量:20，以及「20包」。
+        let qtyMatch = line.match(/[xX×＊*]\s*(\d+)/);
+        if (!qtyMatch) qtyMatch = line.match(/(?:數量|qty)\s*[:：]?\s*(\d+)/i);
+        if (!qtyMatch) qtyMatch = line.match(/(\d+)\s*包\s*$/);
+        if (!qtyMatch) return;
+
+        const qty = Math.max(0, parseInt(qtyMatch[1], 10) || 0);
+        if (!qty) return;
+
+        // 移除數量部分後再比對品名；忽略空格及 《》【】()（） 差異。
+        const namePart = line.slice(0, qtyMatch.index);
+        const normalizedLineName = normalizeMifenName(namePart);
+
+        const matchedItem = DATA.mifen.find(item => {
+          const normalizedItemName = normalizeMifenName(item.name);
+          return normalizedLineName.includes(normalizedItemName) || normalizedItemName.includes(normalizedLineName);
+        });
+
+        if (matchedItem) pendingMifen[matchedItem.name] += qty;
+      });
+
+      if (shouldUpdate) updateMifenTotalSummary();
+    }
+
+    function resetPendingMifen() {
+      const textarea = document.getElementById('pending-mifen-text');
+      if (textarea) textarea.value = '';
+      DATA.mifen.forEach(item => pendingMifen[item.name] = 0);
+      updateMifenTotalSummary();
+      showToast('未到貨已清空！', 'fa-rotate-left', 'text-sky-300');
+    }
+
+    function updateMifenTotalSummary() {
+      parsePendingMifenText(false);
+      const el = document.getElementById('summary-mifen-total');
+      if (!el) return;
+      const lines = DATA.mifen.map(item => {
+        const ordered = state[item.name] || 0;
+        const pending = pendingMifen[item.name] || 0;
+        const total = ordered + pending;
+        return total > 0 ? `${item.name}x${total}包` : `${item.name}❌`;
+      });
+      el.value = `【米粉訂購＋未到貨加總】\n\n` + lines.join('\n');
+      autoResizeTextarea(el);
     }
 
     function renderNatureGrid() {
@@ -973,6 +1099,7 @@
 
     function refreshUI() {
       renderMifenGrid();
+      renderPendingMifen();
       renderNatureGrid();
       updateAllSummaries();
     }
@@ -1001,8 +1128,10 @@
       const summaryMifen = document.getElementById('summary-mifen');
       summaryMifen.value = mifenText;
       autoResizeTextarea(summaryMifen);
+      syncPendingMifenHeight();
       document.getElementById('badge-mifen').textContent = mifenCount;
       document.getElementById('badge-mifen').classList.toggle('hidden', mifenCount === 0);
+      updateMifenTotalSummary();
 
       // 自然風 Text
       let natureCount = 0;
