@@ -682,7 +682,7 @@
       </div>
       <button id="header-preview-btn" onclick="scrollToPreview()" class="ml-auto px-3 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-md shadow-brand-200 transition bounce-active whitespace-nowrap">
         <i class="fa-solid fa-arrow-down-short-wide"></i>
-        <span>前往訂購明細</span>
+        <span>前往叫貨明細</span>
       </button>
     </div>
 
@@ -832,12 +832,12 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-file-lines text-emerald-600 text-base"></i>
-            <h3 class="font-bold text-slate-800 text-sm sm:text-base">【自然風】訂購明細</h3>
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base">【自然風】叫貨明細</h3>
           </div>
         </div>
 
         <div id="preview-content-nature" class="space-y-2.5">
-          <textarea id="summary-nature" readonly rows="6" class="order-detail-output w-full p-3.5 sm:p-4 rounded-xl border border-emerald-200 bg-slate-50 font-mono text-slate-700 focus:outline-none resize-none shadow-inner" placeholder="選擇商品數量後，自然風訂購明細將自動顯示在這裡(*´∀`*)"></textarea>
+          <textarea id="summary-nature" readonly rows="6" class="order-detail-output w-full p-3.5 sm:p-4 rounded-xl border border-emerald-200 bg-slate-50 font-mono text-slate-700 focus:outline-none resize-none shadow-inner" placeholder="選擇商品數量後，自然風叫貨明細將自動顯示在這裡(*´∀`*)"></textarea>
 
           <div class="flex gap-2">
             <button onclick="copyToClipboard('summary-nature')" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-200 flex items-center justify-center gap-1.5 transition bounce-active">
@@ -1002,7 +1002,7 @@
         const total = ordered + pending;
         return total > 0 ? `${item.name}x${total}包` : `${item.name}❌`;
       });
-      el.value = `【米粉訂購＋未到貨加總】\n\n` + lines.join('\n');
+      el.value = `【米粉叫貨＋未到貨加總】\n\n` + lines.join('\n');
       autoResizeTextarea(el);
     }
 
