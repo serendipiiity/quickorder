@@ -1002,7 +1002,7 @@
         const total = ordered + pending;
         return total > 0 ? `${item.name}x${total}包` : `${item.name}❌`;
       });
-      el.value = `【米粉叫貨＋未到貨加總】\n\n` + lines.join('\n');
+      el.value = `【米粉叫貨＋未到貨加總】\n (100克每袋裝40包、500克每袋裝20包、1公斤每袋裝10包)\n\n` + lines.join('\n');
       autoResizeTextarea(el);
     }
 
