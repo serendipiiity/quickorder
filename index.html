@@ -1002,7 +1002,7 @@
         const total = ordered + pending;
         return total > 0 ? `${item.name}x${total}包` : `${item.name}❌`;
       });
-      el.value = `【米粉叫貨＋未到貨加總】\n (100克每袋裝40包、500克每袋裝20包、1公斤每袋裝10包)\n\n` + lines.join('\n');
+      el.value = `【米粉叫貨】(✅=已包完)\n 叫貨未包的\n (100克每袋裝40包、500克每袋裝20包、1公斤每袋裝10包)\n\n` + lines.join('\n');
       autoResizeTextarea(el);
     }
 
@@ -1120,7 +1120,7 @@
 
       let mifenText = "";
       if (DATA.mifen.length > 0) {
-        mifenText = `【米粉叫貨】\n (100克每袋裝40包、500克每袋裝20包、1公斤每袋裝10包)\n\n`;
+        mifenText = `【米粉叫貨】(✅=已包完)\n 叫貨未包的\n (100克每袋裝40包、500克每袋裝20包、1公斤每袋裝10包)\n\n`;
         mifenText += mifenLines.join('\n');
       }
 
